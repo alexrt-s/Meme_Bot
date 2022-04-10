@@ -18,6 +18,8 @@ from instabot import Bot
 from PIL import Image
 import PIL
 
+import time as t
+
 path = '/Users/alexthomson-strong/Desktop/Undergraduate Physics/Junior Honours/Meme Bot/config/your_mom_is_a_ho_chi_minh_uuid_and_cookie.json'
 dummy_folder = '/Users/alexthomson-strong/Desktop/Undergraduate Physics/Junior Honours/Meme Bot/dummy_folder'
 
@@ -56,8 +58,11 @@ def Fetch_Meme(subreddit,listing,limit,timeframe):
     except:
         print('An Error Occured')
     for i in range(0,limit):
-        meme_url = request.json()['data']['children'][i]['data']['url']
-        memes.append(meme_url)
+        try:
+            meme_url = request.json()['data']['children'][i]['data']['url']
+            memes.append(meme_url)
+        except:
+            pass
     return memes
         
 def Save_Meme(memes):
@@ -87,16 +92,28 @@ def Save_Meme(memes):
         '''
     else:
         pass
-    if os.path.exists(dummy_folder) is False:
+    if os.path.exists(dummy_folder) is False: 
         os.mkdir(dummy_folder)
     else:
         pass
     for url in keep:
         img_data = requests.get(url).content
-        filename = url.replace('/','') + '.jpg'
+        filename = url.replace('/','') + '.jpeg'
         with open(dummy_folder + '/' + filename,'wb') as f:
             f.write(img_data)
-    
+
+
+def Edit_Image(name):
+    try:
+        im = Image.open(name)
+        newsize = (1080,1080)
+        im1 = im.resize(newsize)
+        im1 = im1.convert("RGB")
+        os.remove(name)
+        im1.save(name)
+    except:
+        pass
+
             
 def Post(folder):
     files = os.listdir(folder)
@@ -106,18 +123,33 @@ def Post(folder):
               password=password)
     for name in files:
         try:
-            bot.upload_photo(name,caption='your mom')
+            bot.upload_photo(dummy_folder + '/' + name,caption='What the fuck am I doing with my life? X')
+            os.remove(dummy_folder + '/' + name + '.REMOVE_ME')
         except:
             pass
+    #os.empty_directory
     
     
     
 
 def main(subreddit,listing,limit,timeframe):
-    memes = Fetch_Meme(subreddit=subreddit,listing=listing,limit=limit,timeframe=timeframe)
-    keep = Save_Meme(memes)
+    Save_Meme(Fetch_Meme(subreddit=subreddit,listing=listing,limit=limit,timeframe=timeframe))
+    for meme in os.listdir(dummy_folder):
+        Edit_Image(dummy_folder + '/' + meme)
     Post(dummy_folder)
 
 
+subreddits = ['communistmemes','aww','shitposting','EyeBleach']
 
-main('memes','top',100,'day')
+while True:
+    start = t.time()
+    for sub in subreddits:
+        if os.path.isfile(path):
+            os.remove(path)
+        main(sub,'top',10000,'hour')
+    end = t.time()
+    diff = end - start
+    if diff >= 3600:
+        pass
+    else:
+        t.sleep(3600 - diff)
