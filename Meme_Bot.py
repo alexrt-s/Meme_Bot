@@ -4,8 +4,8 @@ Reddit-Instagram Meme Bot 1.0
 https://github.com/alexrt-s
 ####################################################
 The purpose of this code is to make automated posts to instagram given a few parameters,
-which can run indefinitely and thus make thousands of instagram posts without any direct 
-human input.
+which can run indefinitely and thus make thousands of instagram posts without any ongoing 
+human intervention.
 
 The goal is a fully automated instagram account that will become self sustaining as it attrcts and 
 retains new followers. in its current iteration, this has not been achieved
